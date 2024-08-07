@@ -36,13 +36,12 @@ jobs:
         id: build-image
         run: |
           IMAGE_TAG = ${{ inputs.tag }}
-          docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ inputs.tag }}
+          docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ inputs.tag }} ResultEndTestResults/
           echo "::set-output name=image-tag::${{ inputs.tag }}"
 
       - name: Pushing the docker image to ECR
         run: |
-          IMAGE_TAG=${{ steps.build-image.outputs.image-tag }}
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ steps.build-image.outputs.image-tag }}
 
       - name: logout of ECR
         run: |
