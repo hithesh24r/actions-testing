@@ -35,14 +35,14 @@ jobs:
       - name: Building the docker image
         id: build-image
         run: |
-          IMAGE_TAG = ${{ inputs.tag }}
-          docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ inputs.tag }} ResultEndTestResults/
-          echo "::set-output name=image-tag::${{ inputs.tag }}"
+          IMAGE_TAG = ${{ github.event.inputs.tag }}
+          docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG ResultEndTestResults/
+          echo "image-tag=${IMAGE_TAG}" >> $GOTHUB_ENV
 
       - name: Pushing the docker image to ECR
         run: |
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ steps.build-image.outputs.image-tag }}
-
+          IMAGE_TAG = ${{ env.IMAGE_TAG }}
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG
       - name: logout of ECR
         run: |
           docker logout ${{ secrets.ECR_REPOSITORY_URI }}
