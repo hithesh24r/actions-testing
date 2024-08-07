@@ -36,7 +36,7 @@ jobs:
         id: build-image
         run: |
           IMAGE_TAG = ${{ inputs.tag }}
-          docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG
+          docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:$IMAGE_TAG ResultEndTestResults/
           echo "::set-output name=image-tag::${IMAGE_TAG}"
 
       - name: Pushing the docker image to ECR
