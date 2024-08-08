@@ -38,7 +38,7 @@ jobs:
       - name: Building the docker image
         id: build-image
         run: |
-          docker build -t ${{ env.ECR_REPO_NAME }}:{{ inputs.tag }} ResultEndTestResults/
+          docker build -t ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ResultEndTestResults/
           echo "image-tag=${{ inputs.tag }}" >> GITHUB_ENV
 
       - name: Pudhing the docker Image to ECR
