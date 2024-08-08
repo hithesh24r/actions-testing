@@ -14,7 +14,7 @@ on:
 
 env:
   ECR_REPO_NAME: "utaf_result_webpage"
-  AWS_ACCOUNT_ID: "6261-4106-0977"
+  AWS_ACCOUNT_ID: "626141060977"
 
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
           docker build -t ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ResultEndTestResults/
           echo "image-tag=${{ inputs.tag }}" >> GITHUB_ENV
 
-      - name: Pudhing the docker Image to ECR
+      - name: Pushing the docker Image to ECR
         run: |
           docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
 
