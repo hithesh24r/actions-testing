@@ -18,7 +18,7 @@ env:
 
 jobs:
   build:
-    runs-on: github_actions
+    runs-on: ubuntu:latest
     steps:
       - name: Checkout the code from the repo to instance
         uses: actions/checkout@v3
