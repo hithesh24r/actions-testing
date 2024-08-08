@@ -39,11 +39,11 @@ jobs:
         id: build-image
         run: |
           docker build -t ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ResultEndTestResults/
-          docker tag ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+          docker tag ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
 
       - name: Pushing the docker Image to ECR
         run: |
-          docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
+          docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
 
       - name: logout of ECR
         run: |
