@@ -14,7 +14,7 @@ on:
 
 env:
   ECR_REPO_NAME: "utaf_result_webpage"
-  AWS_ACCOUNT_ID: "626141060977"
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
 jobs:
   build:
