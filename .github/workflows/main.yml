@@ -18,7 +18,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: github_actions
 
     steps:
       - name: Checkout the code from the repo to instance
@@ -44,6 +44,10 @@ jobs:
       - name: Pushing the docker Image to ECR
         run: |
           docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
+
+      - name: running the docker container
+        run: |
+          docker run -p 8080:8080 ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }} -d
 
       - name: logout of ECR
         run: |
