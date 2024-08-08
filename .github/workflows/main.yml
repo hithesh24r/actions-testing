@@ -44,7 +44,7 @@ jobs:
       - name: Pushing the docker Image to ECR
         run: |
           # docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ env.IMAGE_TAG }}
-          docker push ${{ ECR_REPOSITORY_URI }}
+          docker push ${{ secrets.ECR_REPOSITORY_URI }}
 
       - name: logout of ECR
         run: |
