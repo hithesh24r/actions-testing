@@ -28,7 +28,7 @@ env:
 
 jobs:
   build:
-    runs-on: utaf-web-runner
+    runs-on: ${{ inputs.runner }}
     steps:
       - name: Checkout the code from the repo to instance
         uses: actions/checkout@v3
