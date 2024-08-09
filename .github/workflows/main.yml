@@ -51,7 +51,7 @@ jobs:
 
       - name: running the docker container
         run: |
-          docker run -p 8080:8080 ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }} -d
+          docker run -d --name run-from-ecr-image -p 8080:8080 ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
 
       - name: logout of ECR
         run: |
