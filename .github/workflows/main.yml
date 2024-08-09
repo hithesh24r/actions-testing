@@ -52,7 +52,7 @@ jobs:
 
   job3:
     runs-on: utaf-web-runner
-    eeds: [job1, job2]
+    needs: [job1, job2]
     steps:
       - name: Pushing the docker Image to ECR
         run: |
