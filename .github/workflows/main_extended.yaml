@@ -59,7 +59,7 @@ jobs:
       - name: Run Docker container on EC2
         run: |
           aws ssm send-command \
-            --instance-ids ${{ secrets.INSTANCE_ID }} \
+            --instance-ids "${{ secrets.INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Docker container" \
             --parameters 'commands=["docker stop my-container || true", "docker rm my-container || true", "${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}", "docker run -d --name run-from-ecr-image -p 8080:8080 ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}"]' \
