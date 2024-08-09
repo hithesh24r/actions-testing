@@ -1,4 +1,4 @@
-name: Build-On-Demand_image
+name: Build-On-Demand_image-Extended
 
 on:
     workflow_dispatch:
