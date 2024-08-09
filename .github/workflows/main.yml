@@ -24,7 +24,7 @@ env:
 
 jobs:
   job1:
-    runs-on: utaf-web-runner
+    runs-on: ${{ inputs.runner }}
     steps:
       - name: Checkout the code from the repo to instance
         uses: actions/checkout@v3
@@ -35,7 +35,7 @@ jobs:
           docker tag ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
       
   job2:
-    runs-on: utaf-web-runner
+    runs-on: ${{ inputs.runner }}
     steps:
       - name: Configure AWS Credentials
         id: configure-aws-credentials
@@ -51,7 +51,7 @@ jobs:
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
   job3:
-    runs-on: utaf-web-runner
+    runs-on: ${{ inputs.runner }}
     needs: [job1, job2]
     steps:
       - name: Pushing the docker Image to ECR
