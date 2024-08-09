@@ -17,12 +17,20 @@ env:
   AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
 
 jobs:
-  build:
+  job1:
     runs-on: utaf-web-runner
     steps:
       - name: Checkout the code from the repo to instance
         uses: actions/checkout@v3
-
+      - name: Building the docker image and tagging the created image
+        id: build-image
+        run: |
+          docker build -t ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ResultEndTestResults/
+          docker tag ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
+      
+  job2:
+    runs-on: utaf-web-runner
+    steps:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -33,15 +41,11 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        # run: |
-        #     aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-      - name: Building the docker image and tagging the created image
-        id: build-image
-        run: |
-          docker build -t ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ResultEndTestResults/
-          docker tag ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
-
+  job3:
+    runs-on: utaf-web-runner
+    eeds: [job1, job2]
+    steps:
       - name: Pushing the docker Image to ECR
         run: |
           docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
@@ -52,4 +56,4 @@ jobs:
 
       - name: logout of ECR
         run: |
-          docker logout ${{ secrets.ECR_REPOSITORY_URI }} 
+          docker logout ${{ secrets.ECR_REPOSITORY_URI }}
