@@ -24,7 +24,7 @@ env:
 
 jobs:
   job1:
-    runs-on: ${{ inputs.runner }}
+    runs-on: utaf-web-runner
     steps:
       - name: Checkout the code from the repo to instance
         uses: actions/checkout@v3
@@ -35,22 +35,24 @@ jobs:
           docker tag ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
       
   job2:
-    runs-on: ${{ inputs.runner }}
+    runs-on: utaf-web-runner
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+        id: configure-aws-credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ${{ secrets.AWS_REGION }}
+          aws configure set default.output json
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
   job3:
-    runs-on: u${{ inputs.runner }}
-    needs: [job1, job2]
+    runs-on: utaf-web-runner
+    eeds: [job1, job2]
     steps:
       - name: Pushing the docker Image to ECR
         run: |
@@ -63,3 +65,10 @@ jobs:
       - name: logout of ECR
         run: |
           docker logout ${{ secrets.ECR_REPOSITORY_URI }}
+
+      - name: removing aws credentials
+        run: |
+          aws configure set aws_access_key_id ""
+          aws configure set aws_secret_access_key ""
+          aws configure set default.region ""
+          aws configure set default.output ""
