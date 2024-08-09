@@ -11,24 +11,6 @@ on:
           description: tag for the docker image
           required: true
           default: latest
-        runner1:
-          type: choice
-          description: runner for the job1
-          options:
-            - runner1
-            - ubuntu-latest
-        runner2:
-          type: choice
-          description: runner for the job2
-          options:
-            - runner2
-            - ubuntu-latest
-        runner3:
-          type: choice
-          description: runner for the job3
-          options:
-            - runner3
-            - ubuntu-latest
 
 env:
   ECR_REPO_NAME: "utaf_result_webpage"
@@ -45,10 +27,7 @@ jobs:
         run: |
           docker build -t ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ResultEndTestResults/
           docker tag ${{ env.ECR_REPO_NAME }}:${{inputs.tag}} ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
-      
-  job2:
-    runs-on: ${{ inputs.runner2 }}
-    steps:
+
       - name: Configure AWS Credentials
         id: configure-aws-credentials
         run: |
@@ -62,10 +41,6 @@ jobs:
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-  job3:
-    runs-on: ${{ inputs.runner3 }}
-    needs: [job1, job2]
-    steps:
       - name: Pushing the docker Image to ECR
         run: |
           docker push ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}
