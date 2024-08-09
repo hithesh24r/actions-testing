@@ -62,9 +62,9 @@ jobs:
             --instance-ids ${{ secrets.INSTANCE_ID }} \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Docker container" \
-            --parameters 'commands=["docker stop my-container || true", "docker rm my-container || true", "docker pull 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-repo:latest", "docker run -d --name my-container -p 80:80 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-repo:latest"]' \
+            --parameters 'commands=["docker stop my-container || true", "docker rm my-container || true", "${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}", "docker run -d --name run-from-ecr-image -p 8080:8080 ${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPO_NAME }}:${{ inputs.tag }}"]' \
             --timeout-seconds 600 \
-            --output text
+            --output text 
 
       # - name: running the docker container
       #   run: |
