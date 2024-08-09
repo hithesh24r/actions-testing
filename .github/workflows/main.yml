@@ -11,6 +11,12 @@ on:
           description: tag for the docker image
           required: true
           default: latest
+        runner:
+          type: choice
+          description: runner for the job
+          options:
+            - utaf-web-runner
+            - ubuntu-latest
 
 env:
   ECR_REPO_NAME: "utaf_result_webpage"
